@@ -2,13 +2,6 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,31 +21,9 @@ export default function Header() {
               Home
             </Link>
 
-            {/* Categories Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="text-slate-300 hover:text-emerald-400 transition flex items-center gap-1 outline-none">
-                Categories
-                <ChevronDown className="w-4 h-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-[#0a1628]/95 backdrop-blur-lg border border-white/10 rounded-xl shadow-2xl min-w-[14rem]">
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/categories/pieces-vidange"
-                    className="text-slate-300 hover:text-emerald-400 hover:bg-white/5 cursor-pointer px-3 py-2"
-                  >
-                    Pièces pour vidange
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/categories/autre-pieces"
-                    className="text-slate-300 hover:text-emerald-400 hover:bg-white/5 cursor-pointer px-3 py-2"
-                  >
-                    Autre pièces
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Link href="/categories" className="text-slate-300 hover:text-emerald-400 transition">
+              Categories
+            </Link>
 
             <Link href="/about" className="text-slate-300 hover:text-emerald-400 transition">
               About
@@ -112,24 +83,12 @@ export default function Header() {
               Home
             </Link>
 
-            {/* Categories with sub-items */}
-            <div className="space-y-2">
-              <div className="text-slate-300 py-2 font-medium">Categories</div>
-              <div className="pl-4 space-y-2">
-                <Link
-                  href="/categories/pieces-vidange"
-                  className="block text-slate-400 hover:text-emerald-400 transition py-2 text-sm"
-                >
-                  Pièces pour vidange
-                </Link>
-                <Link
-                  href="/categories/autre-pieces"
-                  className="block text-slate-400 hover:text-emerald-400 transition py-2 text-sm"
-                >
-                  Autre pièces
-                </Link>
-              </div>
-            </div>
+            <Link
+              href="/categories"
+              className="block text-slate-300 hover:text-emerald-400 transition py-2"
+            >
+              Categories
+            </Link>
 
             <Link
               href="/about"

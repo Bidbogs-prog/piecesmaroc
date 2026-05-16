@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import Link from "next/link";
 
 // ─── Types ───────────────────────────────────────────────────
 export interface Vehicle {
@@ -356,11 +357,13 @@ export default function VehicleSearch({ vehicles }: VehicleSearchProps) {
       {results !== null && results.length > 0 && (
         <div className="mt-4 flex flex-col gap-3">
           {results.slice(0, 20).map((v) => (
-            <div
+            <Link
               key={v.id}
+              href={`/vehicles/${v.id}`}
               className="
                 animate-in fade-in slide-in-from-bottom-1
-                rounded-xl bg-white/5 p-4
+                rounded-xl bg-white/5 p-4 block
+                hover:bg-white/10 transition-colors cursor-pointer
               "
             >
               <h3 className="text-base font-medium text-white">
@@ -389,7 +392,8 @@ export default function VehicleSearch({ vehicles }: VehicleSearchProps) {
                   {v.start_year}–{v.end_year}
                 </Tag>
               </div>
-            </div>
+              <p className="mt-2 text-xs text-orange-400 font-medium">View parts →</p>
+            </Link>
           ))}
         </div>
       )}
