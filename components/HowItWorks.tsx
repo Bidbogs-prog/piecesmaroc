@@ -44,7 +44,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
+    <section className="py-16 bg-linear-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -84,7 +84,7 @@ export default function HowItWorks() {
         {/* CTA */}
         <div className="text-center mt-12">
           <a
-            href="/products"
+            href="/categories"
             className="inline-block bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition"
           >
             Start Shopping Now
