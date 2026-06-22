@@ -1,22 +1,26 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { CartProvider } from "@/lib/cart/CartProvider";
+import CartSheet from "@/components/cart/CartSheet";
+import { Toaster } from "@/components/ui/sonner";
+import { SITE } from "@/lib/constants";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "PiecesMaroc - Buy & Sell Auto Parts in Morocco",
-  description: "The largest marketplace for buying and selling auto parts in Morocco. Find quality spare parts at competitive prices.",
+  title: {
+    default: `${SITE.name} — ${SITE.tagline}`,
+    template: `%s · ${SITE.name}`,
+  },
+  description:
+    "Buy quality car parts in Morocco. Find parts by make, model and year — brakes, filters, engine, suspension and more, delivered nationwide.",
 };
 
 export default function RootLayout({
@@ -26,14 +30,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
-      >
-        <Header />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
+      <body className={`${inter.variable} flex min-h-screen flex-col font-sans antialiased`}>
+        <CartProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <CartSheet />
+          <Toaster position="top-center" richColors />
+        </CartProvider>
       </body>
     </html>
   );

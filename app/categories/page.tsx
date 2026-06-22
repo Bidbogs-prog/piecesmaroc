@@ -1,82 +1,72 @@
-import Link from 'next/link';
-import { getTopLevelCategories, getSubcategories, getPartsCountByCategory } from '@/lib/db/cartec';
+import Link from "next/link";
+import Image from "next/image";
+import { ChevronRight, Search } from "lucide-react";
+import { getCategoryTree } from "@/lib/db/catalog";
 
-export default function CategoriesPage() {
-  const categories = getTopLevelCategories();
-  const partsCount = getPartsCountByCategory();
+export const metadata = { title: "Categories" };
 
-  // Compute sub-count and total parts per top-level category
-  const enriched = categories.map((cat) => {
-    const subs = getSubcategories(cat.id);
-    const totalParts = subs.reduce((sum, s) => sum + (partsCount.get(s.id) ?? 0), 0);
-    return { cat, subCount: subs.length, totalParts };
-  });
+export default async function CategoriesPage() {
+  const tree = await getCategoryTree().catch(() => []);
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Hero */}
-      <div className="bg-[#0a1628] text-white py-12">
-        <div className="container mx-auto px-4">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-white mb-4 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Home
-          </Link>
-          <h1 className="text-3xl font-bold">Parts Categories</h1>
-          <p className="text-slate-400 mt-1">
-            Browse {categories.length} categories across our full parts catalog
-          </p>
-        </div>
-      </div>
+    <div className="container mx-auto px-4 py-10">
+      <nav className="text-sm text-muted-foreground">
+        <Link href="/" className="hover:text-foreground">Home</Link>
+        <span className="px-1.5">/</span>
+        <span className="text-foreground">Categories</span>
+      </nav>
+      <h1 className="mt-2 text-3xl font-bold tracking-tight">Browse by category</h1>
+      <p className="mt-1 text-muted-foreground">
+        {tree.length} categories covering every system of your vehicle.
+      </p>
 
-      {/* Grid */}
-      <div className="container mx-auto px-4 py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {enriched.map(({ cat, subCount, totalParts }) => (
-            <Link
-              key={cat.id}
-              href={`/categories/${cat.id}`}
-              className="group bg-white rounded-2xl border border-slate-200 p-5 flex flex-col gap-4 hover:shadow-lg hover:border-orange-200 transition-all"
-            >
-              {/* Icon */}
-              <div className="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center group-hover:bg-orange-100 transition-colors">
-                {cat.img ? (
-                  <img
-                    src={`https://www.cartec.ma${cat.img}`}
-                    alt={cat.name}
-                    className="w-8 h-8 object-contain"
-                  />
-                ) : (
-                  <svg className="w-7 h-7 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                )}
-              </div>
+      {tree.length === 0 ? (
+        <p className="mt-10 rounded-2xl border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
+          No categories yet — run the migration to populate the catalog.
+        </p>
+      ) : (
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {tree.map((cat) => (
+            <div key={cat.id} className="rounded-2xl border bg-card p-5">
+              <Link href={`/products?category=${cat.slug}`} className="group flex items-center gap-3">
+                <div className="grid size-12 shrink-0 place-items-center rounded-xl bg-muted">
+                  {cat.image_url ? (
+                    <Image src={cat.image_url} alt="" width={28} height={28} className="size-7 object-contain" />
+                  ) : (
+                    <Search className="size-5 text-muted-foreground" />
+                  )}
+                </div>
+                <h2 className="flex-1 font-semibold group-hover:text-primary">{cat.name}</h2>
+                <ChevronRight className="size-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-primary" />
+              </Link>
 
-              {/* Text */}
-              <div className="flex-1">
-                <h2 className="font-semibold text-slate-800 group-hover:text-orange-600 transition-colors leading-snug">
-                  {cat.name}
-                </h2>
-                <p className="text-sm text-slate-400 mt-1">
-                  {subCount} sub-categor{subCount !== 1 ? 'ies' : 'y'}
-                  {totalParts > 0 && ` · ${totalParts} parts`}
-                </p>
-              </div>
-
-              <span className="text-xs font-medium text-orange-500 group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-1">
-                Browse →
-              </span>
-            </Link>
+              {cat.subcategories && cat.subcategories.length > 0 && (
+                <ul className="mt-4 flex flex-col gap-1 border-t pt-4 text-sm">
+                  {cat.subcategories.slice(0, 6).map((sub) => (
+                    <li key={sub.id}>
+                      <Link
+                        href={`/products?category=${sub.slug}`}
+                        className="block truncate rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                      >
+                        {sub.name}
+                      </Link>
+                    </li>
+                  ))}
+                  {cat.subcategories.length > 6 && (
+                    <li>
+                      <Link href={`/products?category=${cat.slug}`} className="block px-2 py-1 text-xs font-medium text-primary hover:underline">
+                        + {cat.subcategories.length - 6} more
+                      </Link>
+                    </li>
+                  )}
+                </ul>
+              )}
+            </div>
           ))}
         </div>
-      </div>
+      )}
     </div>
   );
 }
+
+export const dynamic = "force-dynamic";

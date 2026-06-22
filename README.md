@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PiecesMaroc
 
-## Getting Started
+A car-parts marketplace for Morocco — built with **Next.js 16**, **React 19**, **Tailwind v4**,
+**shadcn/ui** and **Supabase**. Find parts by make / model / engine, browse by category, add to a
+cart, and check out over WhatsApp. Sign in with Google.
 
-First, run the development server:
+## Features
+
+- 🔎 **Vehicle selector** — cascading Make → Model → Engine/Year filter
+- 🛒 **Shopping cart** — persistent (localStorage), slide-over + full cart page
+- 💬 **WhatsApp checkout** — orders are sent as a formatted message to your business number
+- 🔐 **Google sign-in** — Supabase Auth with cookie-based sessions
+- 🗂️ **Catalog** — 65 makes, 4.4k models, 32k vehicles, 297 categories, 9k parts (from `cartec-export.json`)
+- 🎛️ **Filters & sort** — category, brand, price range, in-stock; price / newest sort; pagination
+
+## Setup
+
+### 1. Environment
+
+Copy `.env.example` to `.env.local` and fill in your Supabase values:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxxxxxxxxxxxxxxxxxxx
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key   # migration script only
+NEXT_PUBLIC_WHATSAPP_NUMBER=212660639304          # orders are sent here
+```
+
+### 2. Database
+
+In the Supabase **SQL editor**, run [`supabase/schema.sql`](supabase/schema.sql). This creates the
+`makes`, `models`, `vehicles`, `categories`, `products` and `profiles` tables, RLS policies, and the
+profile-on-signup trigger.
+
+### 3. Google OAuth
+
+In Supabase → **Authentication → Providers → Google**: enable it and add your Google OAuth client
+ID/secret. Then under **Authentication → URL Configuration**, add the redirect URL:
+
+```
+http://localhost:3000/auth/callback
+```
+
+(and your production URL when you deploy).
+
+### 4. Load the catalog
+
+```bash
+npm install
+npm run migrate     # loads cartec-export.json into Supabase (idempotent)
+```
+
+Expected counts: ~65 makes, ~4.4k models, ~32k vehicles, 297 categories, ~9k products.
+
+> Prices: parts without a real price get a deterministic, realistic MAD price (flagged
+> `is_synthetic_price = true`) so every item is buyable. Swap them for real data anytime.
+
+### 5. Run
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Path | Purpose |
+| --- | --- |
+| `supabase/schema.sql` | Database schema + RLS + auth trigger |
+| `scripts/migrate-cartec.ts` | One-shot importer (`npm run migrate`) |
+| `lib/supabase/` | SSR + browser Supabase clients, middleware session refresh |
+| `lib/db/` | Server data layer (`catalog.ts`, `products.ts`) |
+| `lib/cart/` | Cart context + WhatsApp message builder |
+| `components/` | UI — `Header`, `Footer`, `Hero`, `ProductCard`, `VehicleSelector`, `cart/`, `catalog/` |
+| `app/` | Routes — home, `/products`, `/products/[id]`, `/categories`, `/vehicles/[id]`, `/cart`, `/checkout`, `/login`, `/account` |
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` — dev server
+- `npm run build` — production build
+- `npm run migrate` — import catalog into Supabase
+- `npm run lint` — eslint

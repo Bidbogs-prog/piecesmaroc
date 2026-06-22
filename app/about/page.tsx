@@ -1,63 +1,61 @@
-import Link from 'next/link';
+import Link from "next/link";
+import { Search, ShieldCheck, Car, Truck, Tag, Headphones } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export const metadata = { title: "About Us" };
+
+const FEATURES = [
+  { icon: Search, title: "Smart fitment search", desc: "Find parts by make, model, engine and year — no guesswork." },
+  { icon: ShieldCheck, title: "Verified quality", desc: "Genuine and trusted aftermarket brands like Bosch, Valeo and more." },
+  { icon: Car, title: "32,000+ vehicles", desc: "Full catalog coverage for cars sold across Morocco." },
+  { icon: Truck, title: "Nationwide delivery", desc: "Fast delivery to every city, with pay-on-delivery options." },
+  { icon: Tag, title: "Fair prices", desc: "Transparent pricing in MAD with regular deals and discounts." },
+  { icon: Headphones, title: "Expert support", desc: "Our team helps you confirm the right part before you buy." },
+];
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Hero */}
-      <div className="bg-[#0a1628] text-white py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-3">About PiecesMaroc</h1>
-          <p className="text-slate-400 text-lg max-w-xl mx-auto">
-            Morocco's trusted marketplace for quality auto parts — new, refurbished, and used.
+    <div>
+      <div className="bg-navy text-white">
+        <div className="container mx-auto px-4 py-16 text-center">
+          <h1 className="text-3xl font-bold sm:text-4xl">About PiecesMaroc</h1>
+          <p className="mx-auto mt-3 max-w-2xl text-white/70">
+            We connect drivers and mechanics across Morocco with the right auto parts — quickly,
+            affordably, and with confidence.
           </p>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="container mx-auto px-4 py-14 max-w-3xl">
-        <div className="space-y-10">
-          {/* Mission */}
-          <section>
-            <h2 className="text-xl font-bold text-slate-800 mb-3">Our Mission</h2>
-            <p className="text-slate-600 leading-relaxed">
-              PiecesMaroc connects car owners and mechanics across Morocco with verified suppliers
-              offering a wide range of auto parts. Whether you need an OEM component or a
-              cost-effective aftermarket alternative, we make finding the right part simple and fast.
-            </p>
-          </section>
+      <div className="container mx-auto max-w-5xl px-4 py-14">
+        <section className="mx-auto max-w-3xl text-center">
+          <h2 className="text-2xl font-bold">Our mission</h2>
+          <p className="mt-4 leading-relaxed text-muted-foreground">
+            Finding the right car part in Morocco has long meant phone calls, guesswork and trips
+            across town. PiecesMaroc brings the whole catalog online — searchable by your exact
+            vehicle — so you can find what fits, see a fair price, and order in minutes.
+          </p>
+        </section>
 
-          {/* Why us */}
-          <section>
-            <h2 className="text-xl font-bold text-slate-800 mb-4">Why PiecesMaroc?</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {[
-                { icon: '🔍', title: 'Smart Search', desc: 'Find parts by vehicle make, model, year, and fuel type.' },
-                { icon: '✅', title: 'Verified Suppliers', desc: 'Every supplier is reviewed before listing on our platform.' },
-                { icon: '🚗', title: '32 000+ Vehicles', desc: 'Full Cartec catalog coverage for cars sold in Morocco.' },
-              ].map((item) => (
-                <div key={item.title} className="bg-white rounded-xl border border-slate-200 p-5">
-                  <div className="text-3xl mb-2">{item.icon}</div>
-                  <h3 className="font-semibold text-slate-800 mb-1">{item.title}</h3>
-                  <p className="text-sm text-slate-500">{item.desc}</p>
-                </div>
-              ))}
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {FEATURES.map(({ icon: Icon, title, desc }) => (
+            <div key={title} className="rounded-2xl border bg-card p-6">
+              <div className="grid size-12 place-items-center rounded-xl bg-primary/10 text-primary">
+                <Icon className="size-6" />
+              </div>
+              <h3 className="mt-4 font-semibold">{title}</h3>
+              <p className="mt-1.5 text-sm text-muted-foreground">{desc}</p>
             </div>
-          </section>
+          ))}
+        </div>
 
-          {/* Coming soon notice */}
-          <section className="bg-orange-50 border border-orange-200 rounded-xl p-6 text-center">
-            <p className="text-orange-700 font-medium">🚧 Full page coming soon</p>
-            <p className="text-sm text-orange-600 mt-1">
-              We're still building out this section. Check back shortly.
-            </p>
-          </section>
-
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm text-orange-600 hover:text-orange-700 font-medium transition-colors"
-          >
-            ← Back to home
-          </Link>
+        <div className="mt-14 rounded-3xl bg-primary px-8 py-12 text-center text-primary-foreground">
+          <h2 className="text-2xl font-bold">Find your part today</h2>
+          <p className="mx-auto mt-2 max-w-md text-primary-foreground/80">
+            Search 9,000+ parts for 65 makes and get them delivered nationwide.
+          </p>
+          <Button asChild size="lg" variant="secondary" className="mt-6">
+            <Link href="/products">Browse parts</Link>
+          </Button>
         </div>
       </div>
     </div>

@@ -1,156 +1,94 @@
-// Database types for PiecesMaroc
-// These types match your actual Supabase schema
+// Database types for PiecesMaroc — match supabase/schema.sql
 
-export type ProductCondition = 'used' | 'refurbished' | 'aftermarket';
-export type OrderStatus = 'pending' | 'confirmed' | 'ready' | 'shipped' | 'delivered' | 'cancelled';
-
-export interface Supplier {
-  id: string;
+export interface Make {
+  id: number;
   name: string;
-  phone: string;
-  email: string | null;
-  address: string | null;
-  city: string;
-  contact_person: string | null;
-  is_active: boolean;
-  created_at: string;
+  slug: string;
+  logo_url: string | null;
+}
+
+export interface Model {
+  id: number;
+  make_id: number;
+  name: string;
+  short_name: string;
+  slug: string;
+}
+
+export interface Vehicle {
+  id: number;
+  model_id: number;
+  name: string;
+  short_name: string;
+  fuel_type: string | null;
+  year_from: number | null;
+  year_to: number | null;
+  catalog_slug: string | null;
 }
 
 export interface Category {
   id: string;
+  cartec_id: number | null;
   name: string;
   slug: string;
-  description: string | null;
   parent_id: string | null;
   image_url: string | null;
-  created_at: string;
-  updated_at: string;
+  is_leaf: boolean;
+  // computed (not in DB)
+  product_count?: number;
+  subcategories?: Category[];
 }
+
+export interface Linkage {
+  id: number;
+  name: string;
+  shortName: string | null;
+  value: string;
+}
+
+export type ProductCondition = "aftermarket" | "refurbished" | "used";
 
 export interface Product {
   id: string;
-  supplier_id: string | null;
+  cartec_part_id: number | null;
+  vehicle_id: number | null;
   category_id: string | null;
+  make_id: number | null;
   name: string;
-  description: string | null;
+  extra_name: string | null;
+  article_number: string | null;
+  brand_name: string | null;
+  brand_logo_url: string | null;
+  image_url: string | null;
+  in_stock: boolean;
   price: number;
   original_price: number | null;
+  is_synthetic_price: boolean;
   condition: ProductCondition;
-  car_make: string;
-  car_model: string | null;
-  year_from: number | null;
-  year_to: number | null;
-  category: string; // Legacy TEXT field
-  part_number: string | null;
-  image_urls: string[];
-  stock_quantity: number;
-  is_available: boolean;
+  linkages: Linkage[];
+  details: Linkage[];
   created_at: string;
-  updated_at: string;
-  // Joined fields (when fetching with relations)
-  supplier?: Supplier;
-  categories?: Category; // Using 'categories' to match the table name
+  // joined / computed
+  category?: Pick<Category, "id" | "name" | "slug"> | null;
+  make?: Pick<Make, "id" | "name" | "logo_url"> | null;
+  vehicle?: Pick<Vehicle, "id" | "name" | "short_name"> | null;
 }
 
-export interface Order {
+export interface Profile {
   id: string;
-  order_number: string;
-  status: OrderStatus;
-  customer_name: string;
-  customer_phone: string;
-  customer_address: string;
-  customer_city: string;
-  subtotal: number;
-  delivery_fee: number;
-  total_amount: number;
-  notes: string | null;
+  email: string | null;
+  full_name: string | null;
+  avatar_url: string | null;
   created_at: string;
-  updated_at: string;
-  // Joined fields
-  order_items?: OrderItem[];
 }
 
-export interface OrderItem {
-  id: string;
-  order_id: string;
-  product_id: string | null;
-  supplier_id: string | null;
-  product_name: string;
-  quantity: number;
-  price_at_purchase: number;
-  created_at: string;
-  // Joined fields
-  product?: Product;
-  supplier?: Supplier;
-}
-
-// Cart types (client-side only, not stored in DB)
+// Cart (client-side only)
 export interface CartItem {
-  product: Product;
+  id: string;
+  name: string;
+  brand_name: string | null;
+  article_number: string | null;
+  image_url: string | null;
+  price: number;
   quantity: number;
 }
-
-export interface Cart {
-  items: CartItem[];
-  subtotal: number;
-  deliveryFee: number;
-  total: number;
-}
-
-// Form types for creating/updating records
-export interface CreateProductInput {
-  supplier_id: string;
-  category_id?: string;
-  name: string;
-  description?: string;
-  price: number;
-  original_price?: number;
-  condition: ProductCondition;
-  car_make: string;
-  car_model?: string;
-  year_from?: number;
-  year_to?: number;
-  category: string; // Legacy field
-  part_number?: string;
-  image_urls?: string[];
-  stock_quantity?: number;
-  is_available?: boolean;
-}
-
-export interface UpdateProductInput extends Partial<CreateProductInput> {
-  id: string;
-}
-
-export interface CreateSupplierInput {
-  name: string;
-  phone: string;
-  email?: string;
-  address?: string;
-  city?: string;
-  contact_person?: string;
-}
-
-export interface CreateOrderInput {
-  customer_name: string;
-  customer_phone: string;
-  customer_address: string;
-  customer_city: string;
-  items: {
-    product_id: string;
-    product_name: string;
-    quantity: number;
-    price_at_purchase: number;
-  }[];
-  notes?: string;
-  delivery_fee?: number;
-}
-
-export interface UpdateOrderStatusInput {
-  order_id: string;
-  status: OrderStatus;
-}
-
-// Supabase response types
-export type DbResult<T> = T extends PromiseLike<infer U> ? U : never;
-export type DbResultOk<T> = T extends PromiseLike<{ data: infer U }> ? Exclude<U, null> : never;
-export type DbResultErr = { error: { message: string } };
