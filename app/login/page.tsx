@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import Logo from "@/components/Logo";
 import { SITE } from "@/lib/constants";
 import { ShieldCheck, Truck, Tag, Loader2 } from "lucide-react";
 
@@ -47,11 +48,8 @@ function LoginCard() {
 
   return (
     <div className="w-full max-w-md rounded-2xl border bg-card p-8 shadow-sm">
-      <Link href="/" className="mb-6 inline-flex items-center gap-2 text-xl font-extrabold">
-        <span className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground">P</span>
-        <span>
-          Pieces<span className="text-accent">Maroc</span>
-        </span>
+      <Link href="/" className="mb-6 inline-flex items-center" aria-label="PiecesMaroc home">
+        <Logo variant="light" markSize={36} />
       </Link>
 
       <h1 className="text-2xl font-bold tracking-tight">Sign in</h1>

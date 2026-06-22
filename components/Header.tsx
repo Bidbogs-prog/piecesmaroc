@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LayoutGrid } from "lucide-react";
+import Logo from "@/components/Logo";
 import { createClient } from "@/lib/supabase/server";
 import { NAV_LINKS } from "@/lib/constants";
 import HeaderSearch from "@/components/header/HeaderSearch";
@@ -38,11 +39,8 @@ export default async function Header() {
         <div className="container mx-auto flex items-center gap-4 px-4 py-3">
           <MobileMenu signedIn={!!user} />
 
-          <Link href="/" className="flex shrink-0 items-center gap-2 text-xl font-extrabold tracking-tight text-white">
-            <span className="grid size-9 place-items-center rounded-lg bg-accent text-accent-foreground">P</span>
-            <span className="hidden sm:inline">
-              Pieces<span className="text-accent">Maroc</span>
-            </span>
+          <Link href="/" className="flex shrink-0 items-center" aria-label="PiecesMaroc home">
+            <Logo variant="dark" responsive markSize={38} />
           </Link>
 
           <div className="hidden flex-1 md:block">

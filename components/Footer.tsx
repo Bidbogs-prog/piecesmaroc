@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Phone, Mail, MapPin, ShieldCheck, Truck, CreditCard, Headphones } from "lucide-react";
+import Logo from "@/components/Logo";
 import { SITE } from "@/lib/constants";
 
 const FOOTER_LINKS = [
@@ -53,9 +54,8 @@ export default function Footer() {
 
       <div className="container mx-auto grid gap-10 px-4 py-12 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
         <div>
-          <Link href="/" className="flex items-center gap-2 text-xl font-extrabold text-white">
-            <span className="grid size-9 place-items-center rounded-lg bg-accent text-accent-foreground">P</span>
-            Pieces<span className="text-accent">Maroc</span>
+          <Link href="/" className="inline-flex items-center" aria-label="PiecesMaroc home">
+            <Logo variant="dark" showTagline markSize={40} />
           </Link>
           <p className="mt-4 max-w-xs text-sm text-white/60">
             {SITE.tagline}. Genuine and aftermarket parts for every make and model.

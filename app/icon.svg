@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bolt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2456ec"/>
+      <stop offset="1" stop-color="#1538b8"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 0 59.52 16 59.52 48 32 64 4.48 48 4.48 16Z" fill="url(#bolt)"/>
+  <text x="32" y="33" text-anchor="middle" dominant-baseline="central"
+        font-family="'Space Grotesk', system-ui, Arial, sans-serif" font-weight="700"
+        font-size="36" fill="#ffffff">P</text>
+  <circle cx="47" cy="15" r="4.2" fill="#ff6a1a"/>
+</svg>
