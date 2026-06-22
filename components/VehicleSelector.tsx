@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -16,7 +16,7 @@ import type { Make, Model, Vehicle } from "@/types/database";
 
 export default function VehicleSelector({ variant = "light" }: { variant?: "light" | "dark" }) {
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const [makes, setMakes] = useState<Make[]>([]);
   const [models, setModels] = useState<Model[]>([]);
@@ -28,13 +28,13 @@ export default function VehicleSelector({ variant = "light" }: { variant?: "ligh
   const [loading, setLoading] = useState<"models" | "vehicles" | null>(null);
 
   useEffect(() => {
+    if (!supabase) return;
     supabase
       .from("makes")
       .select("*")
       .order("name")
       .then(({ data }) => setMakes((data as Make[]) ?? []));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [supabase]);
 
   async function onMake(value: string) {
     setMakeId(value);
@@ -42,6 +42,7 @@ export default function VehicleSelector({ variant = "light" }: { variant?: "ligh
     setVehicleId("");
     setModels([]);
     setVehicles([]);
+    if (!supabase) return;
     setLoading("models");
     const { data } = await supabase
       .from("models")
@@ -56,6 +57,7 @@ export default function VehicleSelector({ variant = "light" }: { variant?: "ligh
     setModelId(value);
     setVehicleId("");
     setVehicles([]);
+    if (!supabase) return;
     setLoading("vehicles");
     const { data } = await supabase
       .from("vehicles")

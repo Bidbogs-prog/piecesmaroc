@@ -28,6 +28,11 @@ function LoginCard() {
   async function signInWithGoogle() {
     setLoading(true);
     const supabase = createClient();
+    if (!supabase) {
+      setLoading(false);
+      alert("Sign-in is not configured. Please set the Supabase environment variables.");
+      return;
+    }
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
